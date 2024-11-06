@@ -1,7 +1,8 @@
+<!-- TODO: AJUSTAR UI, ADICIONAR POP UP DE MENSAGEM DE ERRO, ADIICONAR FUNÇÃO DE MUDAR SENHA COM CÓDIGO NO EMAIL? -->
 <template>
   <main class="flex items-center justify-center min-h-screen bg-bg-primary">
     <div class="bg-bg-highlight p-8 rounded-lg shadow-lg w-96">
-      <h1 class="text-2xl font-semibold mb-6 text-center text-white">StockSense</h1>
+      <h1 class="text-2xl font-semibold mb-6 text-center text-white">Synthex</h1>
       <input v-model="usuario.email" type="email" placeholder="Email" required
         class="block w-full p-3 mb-4 rounded bg-bg-primary text-white" />
       <div class="relative mb-4">

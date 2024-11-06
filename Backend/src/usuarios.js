@@ -8,8 +8,6 @@ const router = express.Router();
 
 // Cria um novo usuário
 router.post('/', async (req, res) => {
-    console.log("Olha ai: ", req.body);
-
     const { nome, email, senha } = req.body;
 
     try {
@@ -44,6 +42,7 @@ router.delete('/:id', async (req, res) => {
 // Função para autenticar o usuário
 router.post('/login', async (req, res) => {
     const { email, senha } = req.body;
+
 
     if (!email || !senha) {
         return res.status(400).json({ message: 'Email e senha são obrigatórios.' });

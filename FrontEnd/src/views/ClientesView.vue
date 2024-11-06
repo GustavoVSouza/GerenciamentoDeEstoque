@@ -1,7 +1,7 @@
 <template>
     <main class="h-screen bg-bg-primary text-gray-800 dark:text-gray-100 p-5">
         <div>
-            <h1 class="text-2xl font-semibold text-gray-100 mb-4">StockSense - Clientes</h1>
+            <h1 class="text-2xl font-semibold text-gray-100 mb-4">Synthex - Clientes</h1>
 
             <!-- Barra de pesquisa e botão de adicionar cliente -->
             <div class="flex justify-between items-center mb-6">

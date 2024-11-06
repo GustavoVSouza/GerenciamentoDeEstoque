@@ -1,0 +1,188 @@
+-- Criação do banco de dados "Synthex"
+CREATE DATABASE synthex;
+
+
+-- # Criação das Tabelas Principais
+
+-- Tabela de Usuários
+CREATE TABLE usuarios (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    senha VARCHAR(255) NOT NULL,
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Clientes
+CREATE TABLE clientes (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    sobrenome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    telefone VARCHAR(15),
+    cpf VARCHAR(11) UNIQUE NOT NULL,
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    foto_perfil VARCHAR(255)  -- Coluna adicionada para armazenar o link da foto de perfil do cliente
+);
+
+-- Tabela de Produtos
+CREATE TABLE produtos (
+    id SERIAL PRIMARY KEY,
+    usuario_id INT REFERENCES usuarios(id) ON DELETE CASCADE,
+    nome VARCHAR(100) NOT NULL,
+    categoria INT,
+    preco_compra DECIMAL(10, 2) NOT NULL,
+    preco_venda DECIMAL(10, 2) DEFAULT 0,  -- Valor padrão para preco_venda
+    codigo_rastreio VARCHAR(100),
+    status VARCHAR(30) CHECK (status IN ('Disponível', 'Aguardando pagamento', 'Aguardando envio', 'Produto enviado', 'Produto entregue')),
+    espaco_ocupado INT NOT NULL,
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Categorias
+CREATE TABLE categorias (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL UNIQUE
+);
+
+-- Tabela de Relacionamento entre Produtos e Categorias
+CREATE TABLE produto_categorias (
+    produto_id INT REFERENCES produtos(id) ON DELETE CASCADE,
+    categoria_id INT REFERENCES categorias(id) ON DELETE CASCADE,
+    PRIMARY KEY (produto_id, categoria_id)
+);
+
+-- Tabela de Pedidos
+CREATE TABLE pedidos (
+    id SERIAL PRIMARY KEY,
+    cliente_id INT REFERENCES clientes(id) ON DELETE CASCADE,
+    produto_id INT REFERENCES produtos(id) ON DELETE CASCADE,
+    quantidade INT NOT NULL,
+    preco_total DECIMAL(10, 2) NOT NULL,
+    data_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_entrega TIMESTAMP,
+    status_pagamento VARCHAR(30) CHECK (status_pagamento IN ('Pendente', 'Pago')),
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Endereços dos Clientes
+CREATE TABLE enderecos_clientes (
+    id SERIAL PRIMARY KEY,
+    cliente_id INT REFERENCES clientes(id) ON DELETE CASCADE,
+    endereco VARCHAR(255) NOT NULL
+)
+
+-- Inserção de Dados
+
+-- Inserindo dados na tabela de Usuários
+INSERT INTO usuarios (nome, email, senha) VALUES 
+('admin', 'admin@admin', '$2b$10$elm7blFGoudPwhPdZPdzkeXgfTDxVrYbw4ahDWJB2r.Fn.y.xLti2');
+
+-- Inserindo dados na tabela de Clientes
+INSERT INTO clientes (nome, sobrenome, email, telefone, cpf, foto_perfil) VALUES 
+('Carlos Santos', 'Oliveira', 'carlos.oliveira@example.com', '11987654321', '12345678901', 'https://link_da_imagem.com/carlos.jpg'),
+('Fernanda Lima', 'Ferreira', 'fernanda.ferreira@example.com', '11912345678', '23456789012', 'https://link_da_imagem.com/fernanda.jpg'),
+('Ricardo Gomes', 'Almeida', 'ricardo.almeida@example.com', '11911223344', '34567890123', 'https://link_da_imagem.com/ricardo.jpg');
+
+-- Inserindo novas categorias na tabela de Categorias
+INSERT INTO categorias (nome) VALUES 
+('Eletrônicos'),
+('Móveis'),
+('Ferramentas'),
+('Eletrodomésticos'),
+('Roupas');
+
+-- Inserindo produtos variados na tabela de Produtos
+INSERT INTO produtos (usuario_id, nome, categoria, preco_compra, preco_venda, codigo_rastreio, status, espaco_ocupado) VALUES
+(1, 'Smartphone Samsung Galaxy S21', 1, 2000.00, 0, 'R001234', 'Disponível', 1),
+(1, 'Notebook Dell Inspiron 15', 1, 3500.00, 4000, 'R001235', 'Aguardando pagamento', 3),
+(1, 'Furadeira Bosch 500W', 3, 150.00, 220.00, 'R001236', 'Produto enviado', 2),
+(1, 'Geladeira Brastemp Frost Free', 4, 2200.00, 0, 'R001237', 'Disponível', 5),
+(1, 'Camiseta Polo Masculina', 5, 25.00, 50.00, 'R001238', 'Aguardando envio', 1),
+(1, 'Televisor LG OLED 55"', 1, 4500.00, 5000.00, 'R001239', 'Produto entregue', 4),
+(1, 'Sofá Retrátil Cinza', 2, 1200.00, 2000, 'R001240', 'Aguardando pagamento', 6),
+(1, 'Aspirador de Pó Electrolux', 4, 300.00, 0, 'R001241', 'Disponível', 2),
+(1, 'Camiseta Esportiva Nike', 5, 30.00, 60.00, 'R001242', 'Produto enviado', 1),
+(1, 'Ventilador de Coluna Arno', 4, 100.00, 150.00, 'R001243', 'Aguardando envio', 2),
+(1, 'Fone de Ouvido JBL', 1, 150.00, 200.00, 'R001244', 'Produto entregue', 1),
+(1, 'Guarda-Roupa 3 Portas', 2, 800.00, 0, 'R001245', 'Disponível', 8),
+(1, 'Micro-ondas Consul 20L', 4, 250.00, 5000, 'R001246', 'Aguardando pagamento', 2),
+(1, 'Calça Jeans Levis', 5, 90.00, 0, 'R001247', 'Disponível', 1),
+(1, 'Serra Circular Makita', 3, 500.00, 600.00, 'R001248', 'Produto enviado', 3),
+(1, 'Conjunto de Panelas Tramontina', 4, 200.00, 350.00, 'R001249', 'Produto entregue', 2),
+(1, 'Relógio Inteligente Apple Watch', 1, 1500.00, 2000.00, 'R001250', 'Aguardando envio', 1),
+(1, 'Mesa de Jantar 6 Lugares', 2, 800.00, 1200.00, 'R001251', 'Produto entregue', 6),
+(1, 'Jogo de Chaves de Fenda', 3, 50.00, 0, 'R001252', 'Disponível', 1),
+(1, 'Chaleira Elétrica Philips', 4, 70.00, 120.00, 'R001253', 'Aguardando pagamento', 1),
+(1, 'Tênis Adidas Running', 5, 150.00, 300.00, 'R001254', 'Produto enviado', 1),
+(1, 'Lavadora de Alta Pressão Karcher', 3, 400.00, 550.00, 'R001255', 'Produto entregue', 3),
+(1, 'Cadeira Gamer Corsair', 2, 600.00, 0, 'R001256', 'Disponível', 4),
+(1, 'Cafeteira Dolce Gusto', 4, 200.00, 300.00, 'R001257', 'Produto entregue', 2),
+(1, 'Suéter Lã Masculino', 5, 80.00, 130.00, 'R001258', 'Aguardando envio', 1);
+
+-- Inserindo relações entre produtos e categorias
+INSERT INTO produto_categorias (produto_id, categoria_id) VALUES 
+(1, 1),   -- Smartphone na categoria Eletrônicos
+(2, 1),   -- Notebook na categoria Eletrônicos
+(3, 3),   -- Furadeira na categoria Ferramentas
+(4, 4),   -- Geladeira na categoria Eletrodomésticos
+(5, 5),   -- Camiseta na categoria Roupas
+(6, 1),   -- Televisor na categoria Eletrônicos
+(7, 2),   -- Sofá na categoria Móveis
+(8, 4),   -- Aspirador na categoria Eletrodomésticos
+(9, 5),   -- Camiseta Esportiva na categoria Roupas
+(10, 4),  -- Ventilador na categoria Eletrodomésticos
+(11, 1),  -- Fone de ouvido na categoria Eletrônicos
+(12, 2),  -- Guarda-roupa na categoria Móveis
+(13, 4),  -- Micro-ondas na categoria Eletrodomésticos
+(14, 5),  -- Calça Jeans na categoria Roupas
+(15, 3),  -- Serra Circular na categoria Ferramentas
+(16, 4),  -- Conjunto de Panelas na categoria Eletrodomésticos
+(17, 1),  -- Relógio na categoria Eletrônicos
+(18, 2),  -- Mesa de Jantar na categoria Móveis
+(19, 3),  -- Jogo de Chaves de Fenda na categoria Ferramentas
+(20, 4),  -- Chaleira Elétrica na categoria Eletrodomésticos
+(21, 5),  -- Tênis na categoria Roupas
+(22, 3),  -- Lavadora na categoria Ferramentas
+(23, 2),  -- Cadeira Gamer na categoria Móveis
+(24, 4),  -- Cafeteira na categoria Eletrodomésticos
+(25, 5);  -- Suéter na categoria Roupas
+
+-- Inserindo dados na tabela de pedidos
+INSERT INTO pedidos (cliente_id, produto_id, quantidade, preco_total, data_entrega, status_pagamento) VALUES 
+(1, 1, 1, 2500.00, '2024-11-10', 'Pago'),            -- Cliente 1 comprou 1 unidade do "Smartphone Samsung Galaxy S21"
+(2, 2, 1, 4000.00, '2024-11-12', 'Pendente'),        -- Cliente 2 comprou 1 unidade do "Notebook Dell Inspiron 15"
+(3, 3, 2, 440.00, '2024-11-15', 'Pago'),             -- Cliente 3 comprou 2 unidades da "Furadeira Bosch 500W"
+(1, 4, 1, 2500.00, '2024-11-20', 'Pendente'),        -- Cliente 1 comprou 1 unidade da "Geladeira Brastemp Frost Free"
+(2, 5, 3, 150.00, '2024-11-22', 'Pago'),             -- Cliente 2 comprou 3 unidades da "Camiseta Polo Masculina"
+(3, 6, 1, 5000.00, '2024-11-25', 'Pago'),            -- Cliente 3 comprou 1 unidade do "Televisor LG OLED 55\""
+(1, 7, 1, 1600.00, '2024-11-28', 'Pendente'),        -- Cliente 1 comprou 1 unidade do "Sofá Retrátil Cinza"
+(2, 8, 1, 450.00, '2024-11-30', 'Pago'),             -- Cliente 2 comprou 1 unidade do "Aspirador de Pó Electrolux"
+(3, 9, 2, 120.00, '2024-12-02', 'Pendente'),         -- Cliente 3 comprou 2 unidades da "Camiseta Esportiva Nike"
+(1, 10, 1, 150.00, '2024-12-05', 'Pago'),            -- Cliente 1 comprou 1 unidade do "Ventilador de Coluna Arno"
+(2, 11, 3, 600.00, '2024-12-07', 'Pendente'),        -- Cliente 2 comprou 3 unidades do "Fone de Ouvido JBL"
+(3, 12, 1, 1000.00, '2024-12-10', 'Pago'),           -- Cliente 3 comprou 1 unidade do "Guarda-Roupa 3 Portas"
+(1, 13, 2, 600.00, '2024-12-12', 'Pendente'),        -- Cliente 1 comprou 2 unidades do "Micro-ondas Consul 20L"
+(2, 14, 1, 150.00, '2024-12-15', 'Pago'),            -- Cliente 2 comprou 1 unidade da "Calça Jeans Levi's"
+(3, 15, 1, 600.00, '2024-12-18', 'Pendente'),        -- Cliente 3 comprou 1 unidade da "Serra Circular Makita"
+(1, 16, 1, 350.00, '2024-12-20', 'Pago'),            -- Cliente 1 comprou 1 unidade do "Conjunto de Panelas Tramontina"
+(2, 17, 1, 2000.00, '2024-12-22', 'Pendente'),       -- Cliente 2 comprou 1 unidade do "Relógio Inteligente Apple Watch"
+(3, 18, 1, 1200.00, '2024-12-25', 'Pago'),           -- Cliente 3 comprou 1 unidade da "Mesa de Jantar 6 Lugares"
+(1, 19, 4, 320.00, '2024-12-28', 'Pendente'),        -- Cliente 1 comprou 4 unidades do "Jogo de Chaves de Fenda"
+(2, 20, 1, 100.00, '2024-12-30', 'Pago'),            -- Cliente 2 comprou 1 unidade da "Chaleira Elétrica Philips"
+(3, 21, 2, 600.00, '2025-01-02', 'Pendente'),        -- Cliente 3 comprou 2 unidades do "Tênis Adidas Running"
+(1, 22, 1, 550.00, '2025-01-05', 'Pago'),            -- Cliente 1 comprou 1 unidade da "Lavadora de Alta Pressão Karcher"
+(2, 23, 1, 900.00, '2025-01-07', 'Pendente'),        -- Cliente 2 comprou 1 unidade da "Cadeira Gamer Corsair"
+(3, 24, 1, 300.00, '2025-01-10', 'Pago'),            -- Cliente 3 comprou 1 unidade da "Cafeteira Dolce Gusto"
+(1, 25, 3, 390.00, '2025-01-12', 'Pendente');        -- Cliente 1 comprou 3 unidades do "Suéter Lã Masculino"
+
+INSERT INTO enderecos_clientes (cliente_id, endereco) VALUES
+(1, 'Rua das Flores, 123'),
+(2, 'Avenida Paulista, 1000'),
+(3, 'Rua Marechal Deodoro, 456');
+
+
+SELECT * FROM usuarios;
+
+
+

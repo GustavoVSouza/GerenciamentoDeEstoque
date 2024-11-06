@@ -1,6 +1,6 @@
 <template>
     <main class="min-h-screen bg-bg-primary text-gray-800 dark:text-gray-100 p-4 md:p-5">
-        <h1 class="text-2xl font-semibold text-gray-100 mb-4">StockSense - Pedidos</h1>
+        <h1 class="text-2xl font-semibold text-gray-100 mb-4">Synthex - Pedidos</h1>
 
         <div class="flex justify-between items-center mb-6">
             <!-- Input de Pesquisa -->

@@ -1,7 +1,7 @@
 <template>
     <main class="h-100% bg-bg-primary p-5 text-text-primary">
         <nav>
-            <span class="text-3xl font-bold">StockSense</span>
+            <span class="text-3xl font-bold">Synthex</span>
         </nav>
         <div class="mt-10 flex flex-col gap-5">
             <div class="flex gap-4 primeiraSessao">
@@ -45,6 +45,7 @@
                     <canvas id="resultadoAtualChart" class="my-0 mx-auto"></canvas>
                 </section>
             </div>
+            <!-- ANALISAR UTILIZAÇÃO DESSA PARTE, TALVEZ SUBSTITUIR POR ALGO MAIS ÚTIL -->
             <section class="p-6 bg-bg-highlight rounded-lg shadow-md">
                 <h2 class="text-2xl font-semibold mb-4">Armazenamento</h2>
                 <div class="flex flex-col gap-4">
@@ -176,6 +177,7 @@ export default defineComponent({
             }
         }
 
+        // TODO: VERIFICAR COMO FAZER OS CALCULOS CORRETAMENTE, SEPARAR AS FUNÇÕES
         async function resultadoAtualTotal() {
             try {
                 let response = await buscarProdutos();

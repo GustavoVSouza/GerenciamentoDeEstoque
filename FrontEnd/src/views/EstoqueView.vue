@@ -1,7 +1,7 @@
 <template>
     <main class="h-screen bg-bg-primary text-gray-800 dark:text-gray-100 p-5">
         <div class="">
-            <h1 class="text-2xl font-semibold text-gray-100 mb-4">StockSense - Produtos</h1>
+            <h1 class="text-2xl font-semibold text-gray-100 mb-4">Synthex - Produtos</h1>
             <div class="flex justify-between flex-wrap gap-5 items-center mb-4">
                 <!-- Input de Pesquisa -->
                 <div class="relative w-3/4">
